@@ -1,0 +1,36 @@
+services:
+  flink-jobmanager:
+    image: flink:1.18
+    container_name: flink-jobmanager
+    ports:
+      - "8081:8081"
+    environment:
+      - JOB_MANAGER_RPC_ADDRESS=flink-jobmanager
+    command: jobmanager
+    networks:
+      - tradesparks
+    # Suppression du depends_on: - kafka
+
+  flink-taskmanager:
+    image: flink:1.18
+    container_name: flink-taskmanager
+    depends_on:
+      - flink-jobmanager
+    environment:
+      - JOB_MANAGER_RPC_ADDRESS=flink-jobmanager
+    command: taskmanager
+    networks:
+      - tradesparks
+
+  flink-job:
+    build:
+      context: ./jobs/
+    depends_on:
+      - flink-jobmanager
+      - flink-taskmanager
+    networks:
+      - tradesparks
+
+networks:
+  tradesparks:
+    external: true

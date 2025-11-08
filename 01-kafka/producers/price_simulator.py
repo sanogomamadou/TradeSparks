@@ -68,7 +68,7 @@ if __name__ == '__main__':
     while True:
         for topic, base_price in ASSETS.items():
             tick = {
-                'timestamp': datetime.utcnow().isoformat(),
+                'timestamp': datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S.%f')[:-3],
                 'symbol': topic.split('.')[-1],
                 'market': topic.split('.')[0],
                 'price': simulate_price(base_price),

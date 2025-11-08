@@ -8,6 +8,9 @@ services:
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
+    networks:
+      - tradesparks
+
 
   kafka:
     image: 'confluentinc/cp-kafka:7.5.0'
@@ -22,6 +25,8 @@ services:
       KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'false'
+    networks:
+      - tradesparks
 
   create-topics:
     image: confluentinc/cp-kafka:7.5.0
@@ -30,6 +35,8 @@ services:
     entrypoint: [ "/bin/bash", "-c", "sleep 15 && /create_topics.sh" ]
     volumes:
       - ./create_topics.sh:/create_topics.sh
+    networks:
+      - tradesparks
 
   producer:
     build:
@@ -39,3 +46,8 @@ services:
       - create-topics
     environment:
       - BROKER=kafka:9092
+    networks:
+      - tradesparks
+networks:
+  tradesparks:
+    external: true
